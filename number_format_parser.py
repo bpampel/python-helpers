@@ -17,8 +17,6 @@ def number_format_parse(number):
 
     if number[0] == '-':
         is_negative = True
-    # check if generally signed?
-
 
     dot_position = number.find('.')
     if dot_position == -1:
@@ -35,7 +33,8 @@ def number_format_parse(number):
                 fmt_char = e
                 dec_length = e_position - dot_position - 1
                 break
-    else:
+
+    if fmt_char == 'f':
         dec_length = len(number) - dot_position - 1
 
     fmt_str = "%{}.{}{}".format(int_length, dec_length, fmt_char)
