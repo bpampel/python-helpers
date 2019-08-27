@@ -47,18 +47,29 @@ class PlumedHeader:
 
     def replace_line(self, line, pos):
         """
-        Replace header line at given position (line number starting with 0)
+        Replace header line at given position
+        (line number starting with 0)
         """
-        if pos >= len(self.data) or pos < 0:
-            raise ValueError("Trying to replace a nonexistant header line.")
         self.data[pos] = line
 
 
     def del_line(self, pos):
         """
-        Delete header line at given position (line number starting with 0)
+        Delete header line at given position
+        Requires a single integer.
+        Line numbers are starting with 0
         """
         del self.data[pos]
+
+
+    def del_lines(self, pos):
+        """
+        Delete header lines at given positions
+        Requires a list of integers.
+        Line numbers are starting with 0
+        """
+        for i in sorted(pos, reverse=True):
+            del self.data[i]
 
 
     def set(self, header):
@@ -67,13 +78,6 @@ class PlumedHeader:
         Will overwrite existing header
         """
         self.data = header
-
-
-    def get_fields(self):
-        """
-        Get column titles from the FIELDS line
-        """
-        return [field[2:] for field in [line.split() for line in self.data] if field[1] == "FIELDS"]
 
 
     def search_lines(self, string):
