@@ -6,11 +6,14 @@ class NumberFmt:
     Class to store format of numbers
     """
 
-    def __init__(self):
+    def __init__(self, number=None):
         self.flag = ''
         self.specifier = 'f'
         self.width = 12
         self.precision = 6
+        if number is not None:
+            self.parse(number)
+
 
     def parse(self, number):
         """Parse format of number string"""
