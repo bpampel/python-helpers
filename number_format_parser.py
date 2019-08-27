@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-"""
-Class to store format of numbers
-can also parse strings to determine their format
-"""
+"""Parse and use C and numpy style format strings for usage with python"""
 
 class NumberFmt:
+    """
+    Class to store format of numbers
+    """
+
     def __init__(self):
-        self.flag = '-'
+        self.flag = ''
         self.specifier = 'f'
         self.width = 12
         self.precision = 6
@@ -18,7 +19,7 @@ class NumberFmt:
         try:
             float(number)
         except ValueError:
-            print('String is not a number')
+            print("String is not a number")
 
         if number[0] == '+':
             is_signed = True
@@ -54,7 +55,15 @@ class NumberFmt:
         return fmt_str
 
 
-    # def set(self, format_string):
+    def set(self, format_string):
+        """Set class variables to the given C type string"""
+        if format_string[0] != '%':
+            raise ValueError("Not a C style number format")
+        if not format_string[1].isdigit():
+            self.flag = format_string[1]
+        self.width = int(''.join(filter(str.isdigit, format_string.split('.')[0])))
+        self.precision= int(''.join(filter(str.isdigit, format_string.split('.')[1])))
+        self.specifier = format_string[-1]
 
 
 
@@ -64,4 +73,4 @@ if __name__ == '__main__':
         fmt = NumberFmt()
         fmt.parser(num)
         formatted_num = fmt.get() % (float(num))
-        print("{}: {} -> {}".format(num, fmt.get(), formatted_num))
+        print(num + ': ' + fmt.get() + ' -> ' + formatted_num)

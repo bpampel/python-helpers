@@ -7,7 +7,6 @@ class PlumedHeader:
     Can parse and create similar headers for usage in python tools
     """
 
-
     def __init__(self):
         self.data = []
 
