@@ -11,6 +11,14 @@ class PlumedHeader:
         self.data = []
 
 
+    def __str__(self):
+        """
+        Returns header as string with newlines to be printed to file
+        Can be used directly as header argument to numpys savetxt
+        """
+        return ''.join(self.data)
+
+
     def parse_file(self, filename):
         """
         Saves header of a plumed file as list
@@ -30,7 +38,10 @@ class PlumedHeader:
         Insert header line at given position (line number starting with 0)
         Defaults to -1 (append)
         """
-        self.data.insert(pos, line + '\n')
+        if pos == -1:
+            self.data.append(line + '\n')
+        else:
+            self.data.insert(pos, line + '\n')
 
 
     def set(self, header):
@@ -39,11 +50,3 @@ class PlumedHeader:
         Will overwrite existing header
         """
         self.data = header
-
-
-    def print(self):
-        """
-        Returns header as string with newlines to be printed to file
-        Can be used directly as header argument to numpys savetxt
-        """
-        return ''.join(self.data)
