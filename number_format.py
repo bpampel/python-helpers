@@ -12,7 +12,7 @@ class NumberFmt:
         self.width = 12
         self.precision = 6
 
-    def parser(self, number):
+    def parse(self, number):
         """Parse format of number string"""
         is_signed = False
 
@@ -71,6 +71,6 @@ if __name__ == '__main__':
     numbers = ['21.5624', '1.6345e-5', '6.276E2', '3122225', '-2.43123', '-5.781234e10', '-63214']
     for num in numbers:
         fmt = NumberFmt()
-        fmt.parser(num)
+        fmt.parse(num)
         formatted_num = fmt.get() % (float(num))
         print(num + ': ' + fmt.get() + ' -> ' + formatted_num)
