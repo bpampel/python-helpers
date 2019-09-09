@@ -3,9 +3,30 @@ import glob
 import os
 
 
-def get_filenames(basedir):
+def get_fesfiles(directory):
     """
-    Returns all numbered folders and fes files sorted by time
+    Returns the names of all fes files sorted by time and the respective times
+
+    Arguments
+    ---------
+    directory : base directory of the files
+
+    Returns
+    -------
+    A tuple of two elements
+    files   : a list of all filenames sorted by increasing time
+    times   : a list of the respective times of the files
+    """
+    files = [os.path.basename(f) for f in glob.glob(directory + "fes.b1.iter*")]
+    times = [extract_time(f) for f in files]
+    files = [i for _, i in sorted(zip(times, files))]
+    times = sorted(times)
+    return (files, times)
+
+
+def get_subfolders(basedir):
+    """
+    Returns all numbered subfolders and fes files sorted by time
 
     Arguments
     ---------
@@ -13,17 +34,9 @@ def get_filenames(basedir):
 
     Returns
     -------
-    A tuple of three elements
     folders : a list of all numbered directories
-    files   : a list of all filenames sorted by increasing time
-    times   : a list of the respective times of the files
     """
-    tmp_folders = glob.glob(basedir + os.path.sep + "[0-9]*" + os.path.sep)
-    tmp_files = [os.path.basename(f) for f in glob.glob(tmp_folders[0] + "fes.b1.iter*")]
-    tmp_times = [extract_time(f) for f in tmp_files]
-    tmp_files = [i for _, i in sorted(zip(tmp_times, tmp_files))]
-    tmp_times = sorted(tmp_times)
-    return (tmp_folders, tmp_files, tmp_times)
+    return glob.glob(basedir + os.path.sep + "[0-9]*" + os.path.sep)
 
 
 def extract_time(x):
