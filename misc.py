@@ -34,7 +34,7 @@ def get_subfolders(basedir):
 
     Returns
     -------
-    folders : a list of all numbered directories
+    folders : a list of all numbered directories (with trailing '/')
     """
     return glob.glob(basedir + os.path.sep + "[0-9]*" + os.path.sep)
 
@@ -52,3 +52,13 @@ def extract_time(x):
     time : int
     """
     return int(''.join(i for i in x if i.isdigit())[1:])
+
+
+def backup_if_exists(name):
+    """Cascade of backups with format 'bck.$num.name'"""
+    if os.path.exists(name):
+        d, f = os.path.split(name)
+        backupnum = 0
+        while os.path.exists(os.path.join(d, 'bck.'+str(backupnum)+'.'+f)):
+            backupnum += 1
+        os.rename(name, os.path.join(d, 'bck.'+str(backupnum)+'.'+f))
