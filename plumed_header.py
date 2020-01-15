@@ -7,8 +7,9 @@ class PlumedHeader:
     Can parse and create similar headers for usage in python tools
     """
 
-    def __init__(self):
+    def __init__(self, header=None):
         self.data = []
+        self.set(header)
 
 
     def string(self):
@@ -77,6 +78,8 @@ class PlumedHeader:
         Set header to given list of strings
         Will overwrite existing header
         """
+        if header is None:
+            header = []
         self.data = header
 
 
