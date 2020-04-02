@@ -7,64 +7,65 @@ class NumberFmt:
     """
 
     def __init__(self, number=None):
-        self.flag = ''
+        self.flags = ''
         self.specifier = 'f'
-        self.width = 12
-        self.precision = 6
+        self.width = 14
+        self.precision = 9
         if number is not None:
             self.parse(number)
 
 
     def parse(self, number):
-        """Parse format of number string"""
-        is_signed = False
-
+        """
+        Parse format of number string.
+        It is not possible to determine all flags from single number, but works for most cases.
+        """
         try:
             float(number)
         except ValueError:
             print("String is not a number")
 
-        if number[0] == '+':
-            is_signed = True
-            self.flag ='+'
-        elif number[0] == '-':
-            is_signed = True
-            # can't say anything about the flag then
+        self.width = len(number)
+
+        # test for signed flag
+        leading_spaces = len(number) - len(number.lstrip(' '))
+        if number[leading_spaces] == '+': # '-' is ambiguous
+            self.flags ='+'
 
         dot_position = number.find('.')
         if dot_position == -1: # number is an integer
             self.specifier = 'd'
-            self.precision = 0
-            self.width = len(number) - is_signed
+            self.precision = None
             return
 
-        self.width = len(number) - is_signed - 1
+        # check for exponential format
+        for e in ['e', 'E']:
+            e_position = number.find(e)
+            if e_position != -1:
+                self.specifier = e
+                self.precision = e_position - dot_position - 1
+                return
 
-        # check if exponential if dot was at 2nd position
-        if dot_position - is_signed == 1:
-            for e in ['e', 'E']:
-                e_position = number.find(e)
-                if e_position != -1:
-                    self.specifier = e
-                    self.precision = e_position - dot_position - 1
-                    return
-
+        self.specifier = 'f'
         self.precision = len(number) - dot_position - 1
         return
 
 
     def get(self):
         """Return format as C style string"""
-        fmt_str = "%{}{}.{}{}".format(self.flag, self.width, self.precision, self.specifier)
+        if self.precision:
+            fmt_str = "%{}{}.{}{}".format(self.flags, self.width, self.precision, self.specifier)
+        else:
+            fmt_str = "%{}{}{}".format(self.flags, self.width, self.specifier)
         return fmt_str
 
 
     def set(self, format_string):
-        """Set class variables to the given C type string"""
+        """Set class variables to the given Cg type string"""
         if format_string[0] != '%':
             raise ValueError("Not a C style number format")
         if not format_string[1].isdigit():
-            self.flag = format_string[1]
+            self.flags = format_string[1]
         self.width = int(''.join(filter(str.isdigit, format_string.split('.')[0])))
         self.precision= int(''.join(filter(str.isdigit, format_string.split('.')[1])))
         self.specifier = format_string[-1]
@@ -72,7 +73,7 @@ class NumberFmt:
 
 
 if __name__ == '__main__':
-    numbers = ['21.5624', '1.6345e-5', '6.276E2', '3122225', '-2.43123', '-5.781234e10', '-63214', '+3.541']
+    numbers = ['21.5624', '1.6345e-05', '+6.276E+02', '3122225', '-2.43123', '  -63214', '  +3.541']
     for num in numbers:
         fmt = NumberFmt(num)
         formatted_num = fmt.get() % (float(num))

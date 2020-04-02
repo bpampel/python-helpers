@@ -47,11 +47,13 @@ class PlumedHeader:
         """
         Insert header line at given position (line number starting with 0)
         Defaults to -1 (append)
+        This will prepend #! at the start of the line automatically
         """
+        headerline = '#! ' + line
         if pos == -1:
-            self.data.append(line)
+            self.data.append(headerline)
         else:
-            self.data.insert(pos, line)
+            self.data.insert(pos, headerline)
 
     def del_lines(self, pos):
         """
