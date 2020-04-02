@@ -13,7 +13,7 @@ def get_fesfiles(directory):
 
     Returns
     -------
-    A tuple of two elements
+    (files, times) : A tuple of two elements
     files   : a list of all filenames sorted by increasing time
     times   : a list of the respective times of the files
     """
@@ -26,7 +26,7 @@ def get_fesfiles(directory):
 
 def get_subfolders(basedir):
     """
-    Returns all numbered subfolders and fes files sorted by time
+    Returns all numbered subfolders
 
     Arguments
     ---------
@@ -55,10 +55,39 @@ def extract_time(x):
 
 
 def backup_if_exists(name):
-    """Cascade of backups with format 'bck.$num.name'"""
+    """
+    Cascade of backups with format 'bck.$num.name'
+
+    Arguments
+    ---------
+    name : name of file or directory
+
+    Returns
+    -------
+    Nothing
+    """
     if os.path.exists(name):
         d, f = os.path.split(name)
         backupnum = 0
         while os.path.exists(os.path.join(d, 'bck.'+str(backupnum)+'.'+f)):
             backupnum += 1
         os.rename(name, os.path.join(d, 'bck.'+str(backupnum)+'.'+f))
+
+
+def prefix_filename(path, prefix):
+    """
+    Add prefix to filename
+    Works with both a single filename and a longer path
+
+    Arguments
+    ---------
+    path   : filename or full path
+    prefix : prefix to add to filename
+
+    Returns
+    -------
+    prefixed path
+    """
+    d, f = os.path.split(path)
+    f = prefix + f
+    return os.path.join(d, f)

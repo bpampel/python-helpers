@@ -11,28 +11,36 @@ class PlumedHeader:
         self.data = []
         self.set(header)
 
+    def __getitem__(self, index):
+        return self.data[index]
 
-    def string(self):
+    def __setitem__(self, index, line):
+        self.data[index] = line
+
+    def __delitem__(self, index):
+        del self.data[index]
+
+    def __repr__(self):
         """
         Returns header as string with newlines to be printed to file
         Can be used directly as header argument to numpys savetxt
         """
-        return ''.join(self.data)
+        return '\n'.join(self.data)
 
 
     def parse_file(self, filename):
         """
-        Saves header of a plumed file as list
-        Includes the newline characters at the end of every line
+        Saves header of a plumed file as list of lines
+        The header is assumed to be the first lines of the file that start with #!
         """
         header = []
-        for line in open(filename):
-            if line.startswith('#!'):
-                header.append(line)
-            else:
-                self.data = header
-                return
-        raise ValueError("End of file reached. Is this really a plumed data file?")
+        with open(filename) as f:
+            for line in f:
+                if line.startswith('#!'):
+                    header.append(line.rstrip('\n'))
+                else:
+                    self.data = header
+                    return
 
 
     def add_line(self, line, pos=-1):
@@ -41,27 +49,9 @@ class PlumedHeader:
         Defaults to -1 (append)
         """
         if pos == -1:
-            self.data.append(line + '\n')
+            self.data.append(line)
         else:
-            self.data.insert(pos, line + '\n')
-
-
-    def replace_line(self, line, pos):
-        """
-        Replace header line at given position
-        (line number starting with 0)
-        """
-        self.data[pos] = line
-
-
-    def del_line(self, pos):
-        """
-        Delete header line at given position
-        Requires a single integer.
-        Line numbers are starting with 0
-        """
-        del self.data[pos]
-
+            self.data.insert(pos, line)
 
     def del_lines(self, pos):
         """

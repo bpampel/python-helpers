@@ -33,6 +33,7 @@ class NumberFmt:
 
         dot_position = number.find('.')
         if dot_position == -1: # number is an integer
+            self.specifier = 'd'
             self.precision = 0
             self.width = len(number) - is_signed
             return
@@ -46,7 +47,7 @@ class NumberFmt:
                 if e_position != -1:
                     self.specifier = e
                     self.precision = e_position - dot_position - 1
-                    break
+                    return
 
         self.precision = len(number) - dot_position - 1
         return
@@ -71,9 +72,8 @@ class NumberFmt:
 
 
 if __name__ == '__main__':
-    numbers = ['21.5624', '1.6345e-5', '6.276E2', '3122225', '-2.43123', '-5.781234e10', '-63214']
+    numbers = ['21.5624', '1.6345e-5', '6.276E2', '3122225', '-2.43123', '-5.781234e10', '-63214', '+3.541']
     for num in numbers:
-        fmt = NumberFmt()
-        fmt.parse(num)
+        fmt = NumberFmt(num)
         formatted_num = fmt.get() % (float(num))
         print(num + ': ' + fmt.get() + ' -> ' + formatted_num)
