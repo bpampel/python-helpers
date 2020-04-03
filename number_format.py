@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Parse and use C and numpy style format strings for usage with python"""
 
+import re
+
 class NumberFmt:
     """
     Class to store format of numbers
@@ -70,6 +72,19 @@ class NumberFmt:
         self.precision= int(''.join(filter(str.isdigit, format_string.split('.')[1])))
         self.specifier = format_string[-1]
 
+
+def get_string_from_file(filename, col):
+    """
+    Get number string of file from the first non-header line and the given column
+    Tested only with plumed files
+    """
+    with open(filename) as f:
+        for line in f:
+            if line.startswith('#'):
+                continue
+            pat = re.compile('\s*[\d+-.]+') # columns with trailing whitespace
+            numstring = pat.findall(line)[col]
+            return numstring[1::] # remove delimiting whitespace
 
 
 if __name__ == '__main__':
