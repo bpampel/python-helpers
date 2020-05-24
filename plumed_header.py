@@ -15,7 +15,7 @@ class PlumedHeader:
         return self.data[index]
 
     def __setitem__(self, index, line):
-        self.data[index] = line
+        self.replace_line(index,line)
 
     def __delitem__(self, index):
         del self.data[index]
@@ -42,7 +42,6 @@ class PlumedHeader:
                     self.data = header
                     return
 
-
     def add_line(self, line, pos=-1):
         """
         Insert header line at given position (line number starting with 0)
@@ -64,6 +63,13 @@ class PlumedHeader:
         for i in sorted(pos, reverse=True):
             del self.data[i]
 
+    def replace_line(self, pos, line):
+        """
+        Replace line at given position
+        Line numbers are starting with 0
+        """
+        self.del_lines(pos)
+        self.add_line(line,pos)
 
     def set(self, header):
         """
@@ -72,8 +78,8 @@ class PlumedHeader:
         """
         if header is None:
             header = []
-        self.data = header
-
+        for line in header:
+            self.add_line(line)
 
     def search_lines(self, string):
         """
