@@ -68,7 +68,7 @@ class PlumedHeader:
         Replace line at given position
         Line numbers are starting with 0
         """
-        self.del_lines(pos)
+        del self[pos]
         self.add_line(line,pos)
 
     def set(self, header):
