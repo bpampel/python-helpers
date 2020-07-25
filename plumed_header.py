@@ -12,12 +12,12 @@ class PlumedHeader:
     :type delim: str
     """
 
-    def __init__(self, header=None, delim='#!'):
+    def __init__(self, header=None, delim='#! '):
         """Instantiate header
 
         :param header: initial lines of the header without the comment delimiter
         :type header: str or list, optional
-        :param delim: comment delimiter to use, defaults to '#!'
+        :param delim: comment delimiter to use, defaults to '#! '
         :type delim: str, optional
         """
 
@@ -51,7 +51,7 @@ class PlumedHeader:
         with open(filename) as f:
             for line in f:
                 if line.startswith(self.delim):
-                    header.append(line.lstrip('#! ').rstrip('\n'))
+                    header.append(line.lstrip(self.delim).rstrip('\n'))
                 else:
                     self.data = header
                     return
