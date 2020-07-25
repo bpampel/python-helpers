@@ -5,10 +5,24 @@ class PlumedHeader:
     """
     Stores plumed style header in list
     Can parse and create similar headers for usage in python tools
+
+    :param data: list of strings containing the header lines
+    :type data: list
+    :param delim: comment delimiter to set for the comment lines when printing to file
+    :type delim: str
     """
 
-    def __init__(self, header=None):
+    def __init__(self, header=None, delim='#!'):
+        """Instantiate header
+
+        :param header: initial lines of the header without the comment delimiter
+        :type header: str or list, optional
+        :param delim: comment delimiter to use, defaults to '#!'
+        :type delim: str, optional
+        """
+
         self.data = []
+        self.delim = delim
         self.set(header)
 
     def __getitem__(self, index):
@@ -25,19 +39,19 @@ class PlumedHeader:
         Returns header as string with newlines to be printed to file
         Can be used directly as header argument to numpys savetxt
         """
-        return '\n'.join(self.data)
+        return '\n'.join([self.delim + line for line in self.data])
 
 
     def parse_file(self, filename):
         """
-        Saves header of a plumed file as list of lines
-        The header is assumed to be the first lines of the file that start with #!
+        Saves header of a plumed file to the data list
+        The header is assumed to be the first lines of the file that start with the set delimiter
         """
         header = []
         with open(filename) as f:
             for line in f:
-                if line.startswith('#!'):
-                    header.append(line.rstrip('\n'))
+                if line.startswith(self.delim):
+                    header.append(line.lstrip('#! ').rstrip('\n'))
                 else:
                     self.data = header
                     return
@@ -48,11 +62,10 @@ class PlumedHeader:
         Defaults to -1 (append)
         This will prepend #! at the start of the line automatically
         """
-        headerline = '#! ' + line
         if pos == -1:
-            self.data.append(headerline)
+            self.data.append(line)
         else:
-            self.data.insert(pos, headerline)
+            self.data.insert(pos, line)
 
     def del_lines(self, pos):
         """
