@@ -4,6 +4,7 @@ import glob
 import os
 import numpy as np
 
+
 def get_fesfiles(directory):
     """
     Returns the names of all fes files sorted by time and the respective times
@@ -24,6 +25,7 @@ def get_fesfiles(directory):
     times = sorted(times)
     return (files, times)
 
+
 def extract_time(x):
     """
     Get time from filename of fes file
@@ -36,16 +38,18 @@ def extract_time(x):
     -------
     time : int
     """
-    return int(''.join(i for i in x if i.isdigit())[1:])
+    return int("".join(i for i in x if i.isdigit())[1:])
+
 
 def do_stuff(filename):
     fes = np.genfromtxt(filename)
     return np.average(fes)
+
 
 avg = np.ndarray(shape=(21))
 directory = "/home/benjamin/Downloads/testdata/1/"
 filenames, _ = get_fesfiles(directory)
 filenames = [directory + f for f in filenames]
 pool = Pool(processes=3)
-avg = pool.map(do_stuff,filenames)
+avg = pool.map(do_stuff, filenames)
 print(avg)

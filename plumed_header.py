@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Parse and create headers of plumed data files"""
 
+
 class PlumedHeader:
     """
     Stores plumed style header in list
@@ -12,7 +13,7 @@ class PlumedHeader:
     :type delim: str
     """
 
-    def __init__(self, header=None, delim='#! '):
+    def __init__(self, header=None, delim="#! "):
         """Instantiate header
 
         :param header: initial lines of the header without the comment delimiter
@@ -29,7 +30,7 @@ class PlumedHeader:
         return self.data[index]
 
     def __setitem__(self, index, line):
-        self.replace_line(index,line)
+        self.replace_line(index, line)
 
     def __delitem__(self, index):
         del self.data[index]
@@ -39,8 +40,7 @@ class PlumedHeader:
         Returns header as string with newlines to be printed to file
         Can be used directly as header argument to numpys savetxt
         """
-        return '\n'.join([self.delim + line for line in self.data])
-
+        return "\n".join([self.delim + line for line in self.data])
 
     def parse_file(self, filename):
         """
@@ -51,7 +51,7 @@ class PlumedHeader:
         with open(filename) as f:
             for line in f:
                 if line.startswith(self.delim):
-                    header.append(line.lstrip(self.delim).rstrip('\n'))
+                    header.append(line.lstrip(self.delim).rstrip("\n"))
                 else:
                     self.data = header
                     return
@@ -82,7 +82,7 @@ class PlumedHeader:
         Line numbers are starting with 0
         """
         del self[pos]
-        self.add_line(line,pos)
+        self.add_line(line, pos)
 
     def set(self, header):
         """

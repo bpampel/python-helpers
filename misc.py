@@ -51,7 +51,7 @@ def extract_time(x):
     -------
     time : int
     """
-    return int(''.join(i for i in x if i.isdigit())[1:])
+    return int("".join(i for i in x if i.isdigit())[1:])
 
 
 def backup_if_exists(name):
@@ -69,9 +69,9 @@ def backup_if_exists(name):
     if os.path.exists(name):
         d, f = os.path.split(name)
         backupnum = 0
-        while os.path.exists(os.path.join(d, 'bck.'+str(backupnum)+'.'+f)):
+        while os.path.exists(os.path.join(d, "bck." + str(backupnum) + "." + f)):
             backupnum += 1
-        os.rename(name, os.path.join(d, 'bck.'+str(backupnum)+'.'+f))
+        os.rename(name, os.path.join(d, "bck." + str(backupnum) + "." + f))
 
 
 def prefix_filename(path, prefix):
