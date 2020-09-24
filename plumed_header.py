@@ -67,6 +67,12 @@ class PlumedHeader:
         else:
             self.data.insert(pos, line)
 
+    def append_lines(self, lines):
+        """
+        Append one or multiple lines to header
+        """
+        self.data.append(lines)
+
     def del_lines(self, pos):
         """
         Delete header lines at given positions
