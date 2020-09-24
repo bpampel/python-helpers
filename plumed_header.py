@@ -71,7 +71,10 @@ class PlumedHeader:
         """
         Append one or multiple lines to header
         """
-        self.data.append(lines)
+        if isinstance(lines, list):
+            self.data.extend(lines)
+        else:
+            self.data.append(lines)
 
     def del_lines(self, pos):
         """
