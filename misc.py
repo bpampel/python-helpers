@@ -2,6 +2,7 @@
 import glob
 import os
 
+import numpy as np
 
 def get_fesfiles(directory):
     """
@@ -91,3 +92,31 @@ def prefix_filename(path, prefix):
     d, f = os.path.split(path)
     f = prefix + f
     return os.path.join(d, f)
+
+
+def write_2d_sliced_to_file(filename, data, nbins, fmt='%.18e', header=None):
+    """
+    Writes 2d data to file including a newline after every row
+
+    Arguments
+    ---------
+    filename : path to write to
+    data     : numpy array contaning positions and data information
+    nbins    : list with bin numbers per direction
+    fmt      : single format or list of formats for the data columns
+    header   : plumed_header to write to file (optional)
+
+    Returns
+    -------
+    Nothing
+    """
+    data = data.reshape(*nbins, len(data[0])) # split into rows
+    with open(filename, 'w') as outfile:
+        if header:
+            outfile.write(str(header) + '\n')
+        for row in data[:-1]:
+            np.savetxt(outfile, row, comments='', fmt=fmt,
+                       delimiter=' ', newline='\n')
+            outfile.write('\n')
+        np.savetxt(outfile, data[-1], comments='', fmt=fmt,
+                   delimiter=' ', newline='\n')
