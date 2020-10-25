@@ -4,6 +4,7 @@ import os
 
 import numpy as np
 
+
 def get_fesfiles(directory):
     """
     Returns the names of all fes files sorted by time and the respective times
@@ -94,7 +95,7 @@ def prefix_filename(path, prefix):
     return os.path.join(d, f)
 
 
-def write_2d_sliced_to_file(filename, data, nbins, fmt='%.18e', header=None):
+def write_2d_sliced_to_file(filename, data, nbins, fmt="%.18e", header=None):
     """
     Writes 2d data to file including a newline after every row
 
@@ -110,13 +111,11 @@ def write_2d_sliced_to_file(filename, data, nbins, fmt='%.18e', header=None):
     -------
     Nothing
     """
-    data = data.reshape(*nbins, len(data[0])) # split into rows
-    with open(filename, 'w') as outfile:
+    data = data.reshape(*nbins, len(data[0]))  # split into rows
+    with open(filename, "w") as outfile:
         if header:
-            outfile.write(str(header) + '\n')
+            outfile.write(str(header) + "\n")
         for row in data[:-1]:
-            np.savetxt(outfile, row, comments='', fmt=fmt,
-                       delimiter=' ', newline='\n')
-            outfile.write('\n')
-        np.savetxt(outfile, data[-1], comments='', fmt=fmt,
-                   delimiter=' ', newline='\n')
+            np.savetxt(outfile, row, comments="", fmt=fmt, delimiter=" ", newline="\n")
+            outfile.write("\n")
+        np.savetxt(outfile, data[-1], comments="", fmt=fmt, delimiter=" ", newline="\n")

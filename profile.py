@@ -11,7 +11,8 @@ import cProfile
 import tempfile
 import pstats
 
-def profile(sort='cumulative', lines=50, strip_dirs=False):
+
+def profile(sort="cumulative", lines=50, strip_dirs=False):
     """A decorator which profiles a callable.
     Example usage:
 
@@ -40,6 +41,7 @@ def profile(sort='cumulative', lines=50, strip_dirs=False):
     120
     >>>
     """
+
     def outer(fun):
         def inner(*args, **kwargs):
             file = tempfile.NamedTemporaryFile()
@@ -62,25 +64,27 @@ def profile(sort='cumulative', lines=50, strip_dirs=False):
 
             file.close()
             return ret
+
         return inner
 
     # in case this is defined as "@profile" instead of "@profile()"
-    if hasattr(sort, '__call__'):
+    if hasattr(sort, "__call__"):
         fun = sort
-        sort = 'cumulative'
+        sort = "cumulative"
         outer = outer(fun)
     return outer
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
+
     @profile
     def factorial(n):
         n = abs(int(n))
         if n < 1:
-                n = 1
+            n = 1
         x = 1
         for i in range(1, n + 1):
-                x = i * x
+            x = i * x
         return x
 
     factorial(10)
