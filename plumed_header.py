@@ -15,7 +15,7 @@ class PlumedHeader:
     :type delim: str
     """
 
-    def __init__(self, fields=None, constants=None, delim="#!"):
+    def __init__(self, fields=None, constants=None, delim=None):
         """Instantiate header
 
         :param fields: list holding description of the data columns, optional
@@ -25,7 +25,7 @@ class PlumedHeader:
         """
         self.fields = fields or []
         self.constants = constants or {}
-        self.delim = delim
+        self.delim = delim or "#!"
 
     def __repr__(self):
         """

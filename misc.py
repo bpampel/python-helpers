@@ -4,6 +4,8 @@ import os
 
 import numpy as np
 
+from .plumed_header import PlumedHeader
+
 
 def get_fesfiles(directory):
     """
@@ -74,6 +76,30 @@ def backup_if_exists(name):
         while os.path.exists(os.path.join(d, "bck." + str(backupnum) + "." + f)):
             backupnum += 1
         os.rename(name, os.path.join(d, "bck." + str(backupnum) + "." + f))
+
+
+def initialize_file(filename, fields=None, constants=None, comment_delim=None, overwrite=False):
+    """Initialize file by backing up existing file at location and writing header
+
+    Arguments
+    ---------
+    filename      : path to file
+    overwrite     : should existing file be overwritten, defaults to False
+    fields        : column descriptors of data for header, optional
+    constants     : constants for header, optional
+    comment_delim : custom delimiter for header comments, optional
+
+    Returns
+    -------
+    Nothing
+    """
+    if not overwrite:
+        backup_if_exists(filename)
+
+    with open(filename, "w") as f:
+        if fields:
+            header = PlumedHeader(fields, constants, comment_delim)
+            f.write(str(header) + '\n')
 
 
 def prefix_filename(path, prefix):
