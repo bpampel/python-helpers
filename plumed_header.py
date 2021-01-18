@@ -7,105 +7,84 @@ class PlumedHeader:
     Stores plumed style header in list
     Can parse and create similar headers for usage in python tools
 
-    :param data: list of strings containing the header lines
-    :type data: list
+    :param fields: list of strings containing the column descriptions
+    :type fields: list
+    :param constants: dictionary of constants for the data
+    :type fields: dict {name: val}
     :param delim: comment delimiter to set for the comment lines when printing to file
     :type delim: str
     """
 
-    def __init__(self, header=None, delim="#! "):
+    def __init__(self, fields=None, constants=None, delim="#!"):
         """Instantiate header
 
-        :param header: initial lines of the header without the comment delimiter
-        :type header: str or list, optional
-        :param delim: comment delimiter to use, defaults to '#! '
+        :param fields: list holding description of the data columns, optional
+        :param constants: dictionary with additional constants, optional
+        :param delim: comment delimiter to use, defaults to '#!'
         :type delim: str, optional
         """
-
-        self.data = []
+        self.fields = fields or []
+        self.constants = constants or {}
         self.delim = delim
-        self.set(header)
-
-    def __getitem__(self, index):
-        return self.data[index]
-
-    def __setitem__(self, index, line):
-        self.replace_line(index, line)
-
-    def __delitem__(self, index):
-        del self.data[index]
 
     def __repr__(self):
         """
-        Returns header as string with newlines to be printed to file
-        Can be used directly as header argument to numpys savetxt
+        Returns header as string with newlines to be printed to file.
+        Can be used directly as header argument to numpys savetxt.
         """
-        return "\n".join([self.delim + line for line in self.data])
+        lines = []
+        lines.append(self.delim + " FIELDS " + " ".join(self.fields))
+        for name, value in self.constants.items():
+            lines.append(f"{self.delim} SET {name} {value}")
+        return "\n".join(lines)
 
-    def parse_file(self, filename):
+    def parse_file(self, filename, delim=None):
         """
-        Saves header of a plumed file to the data list
-        The header is assumed to be the first lines of the file that start with the set delimiter
+        Parse header of plumed file.
+
+        The header is assumed to be the first lines of the file that start with the set delimiter.
+        This overwrites the existing fields and constants of the class instance.
+        If no custom delimiter is specified the one of the class instance is used.
+
+        :param filename: file to parse
+        :param delim: comment delimiter of file, optional
         """
+        if not delim:
+            delim = self.delim
+
         header = []
-        with open(filename) as f:
+        with open(filename, "r") as f:
             for line in f:
-                if line.startswith(self.delim):
-                    header.append(line.lstrip(self.delim).rstrip("\n"))
-                else:
-                    self.data = header
-                    return
+                if line.startswith(delim):
+                    header.append(line.lstrip(delim).rstrip("\n").strip())
+        if not header:
+            raise ValueError(f"No header was found in specified file {filename}")
 
-    def add_line(self, line, pos=-1):
-        """
-        Insert header line at given position (line number starting with 0)
-        Defaults to -1 (append)
-        This will prepend #! at the start of the line automatically
-        """
-        if pos == -1:
-            self.data.append(line)
+        # first line contains description of columns
+        if header[0].startswith("FIELDS"):
+            self.fields = header[0].split()[1:]
         else:
-            self.data.insert(pos, line)
+            raise ValueError(f"No FIELDS found in specified file {filename}")
 
-    def append_lines(self, lines):
-        """
-        Append one or multiple lines to header
-        """
-        if isinstance(lines, list):
-            self.data.extend(lines)
-        else:
-            self.data.append(lines)
+        # (optional) remaining lines contain constants
+        for line in header[1:]:
+            if line.startswith("SET"):
+                name, val = line.split()[1:3]
+                self.constants[name] = val
 
-    def del_lines(self, pos):
+    def set_constant(self, name, val):
         """
-        Delete header lines at given positions
-        Requires a list of integers.
-        Line numbers are starting with 0
-        """
-        for i in sorted(pos, reverse=True):
-            del self.data[i]
+        Add constant to header. Will overwrite existing value of same name
 
-    def replace_line(self, pos, line):
+        :param name: Name of constant
+        :param val: Value of constant (will be cast to str)
         """
-        Replace line at given position
-        Line numbers are starting with 0
-        """
-        del self[pos]
-        self.add_line(line, pos)
+        self.constants[name] = str(val)
 
-    def set(self, header):
+    def add_field(self, name):
         """
-        Set header to given list of strings
-        Will overwrite existing header
-        """
-        if header is None:
-            header = []
-        for line in header:
-            self.add_line(line)
+        Append field to header
 
-    def search_lines(self, string):
+        :param name: name of field
         """
-        Get all lines containing string
-        Returns list of tuples (linenumber, line)
-        """
-        return [(i, line) for i, line in enumerate(self.data) if string in line]
+        self.fields.append(name)
