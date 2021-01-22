@@ -78,7 +78,9 @@ def backup_if_exists(name):
         os.rename(name, os.path.join(d, "bck." + str(backupnum) + "." + f))
 
 
-def initialize_file(filename, fields=None, constants=None, comment_delim=None, overwrite=False):
+def initialize_file(
+    filename, fields=None, constants=None, comment_delim=None, overwrite=False
+):
     """Initialize file by backing up existing file at location and writing header
 
     Arguments
@@ -99,7 +101,7 @@ def initialize_file(filename, fields=None, constants=None, comment_delim=None, o
     with open(filename, "w") as f:
         if fields:
             header = PlumedHeader(fields, constants, comment_delim)
-            f.write(str(header) + '\n')
+            f.write(str(header) + "\n")
 
 
 def prefix_filename(path, prefix):
