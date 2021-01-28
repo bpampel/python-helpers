@@ -88,3 +88,18 @@ class PlumedHeader:
         :param name: name of field
         """
         self.fields.append(name)
+
+
+def create_from_file(filename, delim=None):
+    """Create header instance and directly parse given file
+
+    If the file has a special delimiter for header lines it can also be specified
+
+    :param filename: path to file to parse
+    :param delim: custom delimiter of header lines, optional
+
+    :returns header: PlumedHeader instance with fields and constants from file
+    """
+    header = PlumedHeader(delim=delim)
+    header.parse_file(filename)
+    return header
