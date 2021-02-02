@@ -147,3 +147,21 @@ def write_2d_sliced_to_file(filename, data, nbins, fmt="%.18e", header=None):
             np.savetxt(outfile, row, comments="", fmt=fmt, delimiter=" ", newline="\n")
             outfile.write("\n")
         np.savetxt(outfile, data[-1], comments="", fmt=fmt, delimiter=" ", newline="\n")
+
+
+def make_ordinal(n):
+    """Convert an integer into its ordinal representation::
+
+        make_ordinal(0)   => '0th'
+        make_ordinal(3)   => '3rd'
+        make_ordinal(122) => '122nd'
+        make_ordinal(213) => '213th'
+
+    :param n: number to get representation
+    :return ordinal: string containing representation
+    """
+    n = int(n)
+    suffix = ['th', 'st', 'nd', 'rd', 'th'][min(n % 10, 4)]
+    if 11 <= (n % 100) <= 13:
+        suffix = 'th'
+    return str(n) + suffix
