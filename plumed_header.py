@@ -88,3 +88,10 @@ class PlumedHeader:
         :param name: name of field
         """
         self.fields.append(name)
+
+
+def create_from_file(name):
+    """Parse header from file and return as PlumedHeader object"""
+    header = PlumedHeader()
+    header.parse_file(name)
+    return header
