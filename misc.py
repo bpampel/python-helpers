@@ -161,7 +161,7 @@ def make_ordinal(n):
     :return ordinal: string containing representation
     """
     n = int(n)
-    suffix = ['th', 'st', 'nd', 'rd', 'th'][min(n % 10, 4)]
+    suffix = ["th", "st", "nd", "rd", "th"][min(n % 10, 4)]
     if 11 <= (n % 100) <= 13:
-        suffix = 'th'
+        suffix = "th"
     return str(n) + suffix
