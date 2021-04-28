@@ -5,7 +5,16 @@
 import matplotlib.pyplot as plt
 
 
-def plot_data(xvals, yvals, styles='', func_labels=None, xlabel=None, ylabel=None, legend_title=None, filename=None):
+def plot_data(
+    xvals,
+    yvals,
+    styles="",
+    func_labels=None,
+    xlabel=None,
+    ylabel=None,
+    legend_title=None,
+    filename=None,
+):
     """Simple plot function
 
     xvals and yvals can be either simple lists of values to plot a single function
@@ -29,11 +38,11 @@ def plot_data(xvals, yvals, styles='', func_labels=None, xlabel=None, ylabel=Non
         iter(xvals[0])  # check if xval is list of lists --> multiple functions
         # set default lists of right length if not specified
         if not styles:
-            styles = ['']*len(xvals)
+            styles = [""] * len(xvals)
         if not func_labels:
-            func_labels = [None]*len(xvals)
+            func_labels = [None] * len(xvals)
         # plot each function
-        for i,_ in enumerate(xvals):
+        for i, _ in enumerate(xvals):
             ax.plot(xvals[i], yvals[i], styles[i], label=func_labels[i])
     except TypeError:  # is single function? Not very safe, but works
         ax.plot(xvals, yvals, styles)
