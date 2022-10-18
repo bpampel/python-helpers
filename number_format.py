@@ -83,7 +83,10 @@ def get_string_from_file(filename, col):
             if line.startswith("#"):
                 continue
             pat = re.compile("\s*[\d+-.]+")  # columns with trailing whitespace
-            numstring = pat.findall(line)[col]
+            try:
+                numstring = pat.findall(line)[col]
+            except IndexError: # happens if e.g. value is inf
+                continue
             return numstring[1::]  # remove delimiting whitespace
 
 
